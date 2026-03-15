@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroVisualizer | Deep Space Archive</title>
+    <title>The Infinite Archive | Deep Space</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 </head>
@@ -12,37 +12,50 @@
     <div class="custom-cursor"></div>
     <div class="noise-overlay"></div>
 
-    <div class="loader">
-        <h1 class="loader-text">INITIALIZING...</h1>
-    </div>
-
-    <main id="main-content">
-        <section class="hero">
-            <div class="hero-content">
-                <p class="tagline">ARCHIVE 01 // DEEP SPACE</p>
-                <h1 class="main-title">ASTRO<br>VISUAL</h1>
-            </div>
-            <div class="scroll-indicator">SCROLL TO EXPLORE</div>
+    <main id="viewport">
+        <section class="panel hero">
+            <h1 class="massive-text">COSMOS</h1>
+            <p class="tagline">SCROLL TO LEAVE EARTH</p>
+            <div class="scroll-down-line"></div>
         </section>
 
-        <section class="info-section">
-            <div class="content-wrapper">
-                <div class="text-side">
-                    <h2 class="reveal-text">VOYAGER 1</h2>
-                    <p class="description">Currently 14.5 billion miles from Earth. Exploring the interstellar medium beyond the reach of our sun's solar wind.</p>
+        <section class="panel voyager">
+            <div class="content-box">
+                <h2>VOYAGER 1</h2>
+                <h3 class="data-stat">DISTANCE: 16,000,000,000 MILES</h3>
+                <p>Launched in 1977, Voyager 1 is the most distant human-made object. By late 2026, it reaches a distance of one light-day from Earth—meaning a single radio signal takes a full 24 hours to reach it.</p>
+            </div>
+            <img class="floating-img" src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&q=80&w=1000" alt="Spacecraft">
+        </section>
+
+        <section class="horizontal-container">
+            <div class="horizontal-wrapper">
+                
+                <div class="h-panel milky-way">
+                    <h1 class="outline-text">THE MILKY WAY</h1>
+                    <p class="h-desc">100,000 light-years across. Containing over 100 billion stars. You are here, somewhere in the Orion Arm.</p>
                 </div>
-                <div class="image-container">
-                    <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=1200" alt="Space Mission">
+                
+                <div class="h-panel jwst">
+                    <div class="jwst-content">
+                        <h2>DEEP FIELD</h2>
+                        <h3 class="data-stat">GALAXY JADES-GS-z14-0</h3>
+                        <p>Looking back in time. JWST confirmed this luminous galaxy existed just 290 million years after the Big Bang, fundamentally challenging our models of early cosmic formation.</p>
+                    </div>
+                    <img class="jwst-img" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1200" alt="Deep Space Nebula">
                 </div>
+
+                <div class="h-panel edge">
+                    <h1 class="outline-text">THE EDGE</h1>
+                    <p class="h-desc">46.5 billion light-years away. The edge of the observable universe. The end of the archive.</p>
+                </div>
+
             </div>
         </section>
 
-        <section class="footer-section">
-            <div class="footer-content">
-                <h2>END OF DATA</h2>
-                <p>Built with GSAP & ScrollTrigger</p>
-                <a href="#" class="github-link">VIEW SOURCE</a>
-            </div>
+        <section class="panel footer">
+            <h2>END OF TRANSMISSION</h2>
+            <a href="#" class="btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">RETURN TO EARTH</a>
         </section>
     </main>
 
