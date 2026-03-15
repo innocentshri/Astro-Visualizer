@@ -2,54 +2,55 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Custom Cursor
 const cursor = document.querySelector('.custom-cursor');
-document.addEventListener('mousemove', (e) => {
-    gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.15,
-        ease: "power2.out"
-    });
+window.addEventListener('mousemove', (e) => {
+    gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1, ease: "power2.out" });
 });
 
-// Initial Page Load
-window.addEventListener('load', () => {
-    const tl = gsap.timeline();
-
-    tl.to(".loader-text", { opacity: 0, duration: 0.5 })
-        .to(".loader", {
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-            duration: 1,
-            ease: "power4.inOut"
-        })
-        .from(".main-title", {
-            y: 150,
-            skewY: 10,
-            opacity: 0,
-            duration: 1.5,
-            ease: "power4.out"
-        }, "-=0.5")
-        .from(".tagline", { opacity: 0, y: 20 }, "-=1");
+// 1. Hero Entrance
+gsap.from(".massive-text", {
+    y: 100, opacity: 0, duration: 2, ease: "power4.out"
 });
 
-// Image Parallax/Zoom Effect
-gsap.to(".image-container img", {
-    scale: 1,
+// 2. Voyager Parallax
+gsap.to(".floating-img", {
+    y: -150,
+    ease: "none",
     scrollTrigger: {
-        trigger: ".info-section",
+        trigger: ".voyager",
         start: "top bottom",
         end: "bottom top",
-        scrub: 1
+        scrub: true
     }
 });
 
-// Text reveal on scroll
-gsap.from(".text-side", {
-    x: -50,
-    opacity: 0,
-    duration: 1,
+// 3. HORIZONTAL SCROLL
+const horizontalSection = document.querySelector('.horizontal-container');
+const horizontalWrapper = document.querySelector('.horizontal-wrapper');
+
+// We calculate how far to move left by subtracting one screen width from the total width
+let scrollTween = gsap.to(horizontalWrapper, {
+    x: () => -(horizontalWrapper.scrollWidth - window.innerWidth) + "px",
+    ease: "none",
     scrollTrigger: {
-        trigger: ".text-side",
-        start: "top 70%",
+        trigger: horizontalSection,
+        start: "top top", // When the section hits the top of the viewport
+        end: () => "+=" + horizontalWrapper.scrollWidth, // Pin it for the duration of its width
+        pin: true, // This is what locks the screen
+        scrub: 1, // Smooth scrubbing
+        invalidateOnRefresh: true
+    }
+});
+
+// 4. Reveal Image inside Horizontal Scroll
+// Using 'containerAnimation' allows ScrollTrigger to know it's moving sideways
+gsap.from(".jwst-img", {
+    scale: 0.5,
+    opacity: 0,
+    ease: "power2.out",
+    scrollTrigger: {
+        trigger: ".jwst",
+        containerAnimation: scrollTween, // Link to the horizontal animation
+        start: "left center", // Trigger when the panel reaches the center of screen
         toggleActions: "play none none reverse"
     }
 });
