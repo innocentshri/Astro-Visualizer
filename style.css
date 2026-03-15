@@ -1,144 +1,151 @@
 :root {
-    --bg-deep: #02040a;
-    --accent-cyan: #00f0ff;
-    --accent-purple: #b026ff;
-    --text-main: #ffffff;
-    --text-muted: #8a93a5;
-    --glass-bg: rgba(10, 15, 30, 0.4);
-    --glass-border: rgba(0, 240, 255, 0.2);
+    --bg-dark: #020204;
+    --neon-cyan: #00f0ff;
+    --neon-purple: #b026ff;
+    --neon-magenta: #ff007f;
+    --text-main: #f0f4f8;
+    --text-muted: #6b7280;
+    --glass-bg: rgba(10, 12, 20, 0.4);
+    --glass-border: rgba(0, 240, 255, 0.15);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    cursor: crosshair; /* Sci-fi cursor */
+    margin: 0; padding: 0; box-sizing: border-box; cursor: none;
 }
 
 body {
-    background-color: var(--bg-deep);
+    background-color: var(--bg-dark);
     color: var(--text-main);
     font-family: 'Space Grotesk', sans-serif;
     overflow-x: hidden;
 }
 
-/* 3D Canvas fixed to background */
+/* Custom Sci-Fi Cursor */
+.custom-cursor {
+    width: 24px; height: 24px; border: 1px solid var(--neon-cyan);
+    border-radius: 50%; position: fixed; pointer-events: none;
+    z-index: 9999; transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s; mix-blend-mode: screen;
+}
+.custom-cursor::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 4px; height: 4px; background: var(--neon-magenta);
+    border-radius: 50%; transform: translate(-50%, -50%);
+}
+
+/* Background Canvas & Effects */
 #universe-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: -1;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
 }
 
-/* Sci-Fi HUD Elements */
+.scanline-overlay {
+    position: fixed; inset: 0; z-index: 100; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+    background-size: 100% 4px; opacity: 0.3;
+}
+
+/* HUD System */
 .hud {
-    position: fixed;
-    font-family: 'Space Grotesk', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    color: var(--accent-cyan);
-    z-index: 100;
-    pointer-events: none;
+    position: fixed; font-family: 'Space Grotesk', monospace; font-size: 0.75rem;
+    letter-spacing: 3px; color: var(--neon-cyan); z-index: 101; font-weight: 500;
 }
-.top-left { top: 2vw; left: 2vw; }
-.top-right { top: 2vw; right: 2vw; pointer-events: auto; }
-.bottom-left { bottom: 2vw; left: 2vw; }
-.bottom-right { bottom: 2vw; right: 2vw; }
+.hud-tl { top: 2rem; left: 2rem; }
+.hud-tr { top: 2rem; right: 2rem; }
+.hud-bl { bottom: 2rem; left: 2rem; opacity: 0.5; }
+.hud-br { bottom: 2rem; right: 2rem; }
 
-#audio-toggle {
-    background: none; border: 1px solid var(--accent-cyan);
-    color: var(--accent-cyan); padding: 5px 10px;
-    font-family: inherit; cursor: pointer; transition: all 0.3s;
-}
-#audio-toggle:hover { background: var(--accent-cyan); color: #000; }
-
-/* Grid Overlay */
-.grid-overlay {
-    position: fixed; inset: 0; z-index: -1; pointer-events: none;
-    background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 5vw 5vw;
+/* Global Typography & Layout */
+section {
+    min-height: 100vh; width: 100vw; padding: 10vw 5vw;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; z-index: 10;
 }
 
-/* Sections */
-.section {
-    min-height: 100vh;
-    width: 100vw;
-    padding: 10vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    z-index: 10;
+h1, h2, h3, .glitch-title { font-family: 'Syncopate', sans-serif; }
+
+.section-heading { margin-bottom: 4rem; text-align: center; }
+.section-heading h2 { font-size: clamp(1.5rem, 4vw, 3rem); letter-spacing: 4px; }
+.neon-line { height: 1px; width: 150px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); margin: 1rem auto; }
+
+/* --- 1. HERO --- */
+.sec-hero { align-items: center; text-align: center; }
+.eyebrow-text { color: var(--neon-purple); letter-spacing: 10px; font-size: 0.8rem; margin-bottom: 2rem; }
+.glitch-title { font-size: clamp(3rem, 12vw, 10rem); line-height: 0.9; text-shadow: 0 0 40px rgba(0, 240, 255, 0.4); margin-bottom: 4rem; }
+.hero-cta { display: flex; flex-direction: column; align-items: center; gap: 1rem; font-size: 0.8rem; letter-spacing: 4px; color: var(--neon-cyan); }
+.pulse-ring { width: 40px; height: 40px; border: 1px solid var(--neon-cyan); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+
+/* --- 2. JOURNEY (Storytelling) --- */
+.sec-journey { align-items: center; }
+.journey-track { display: flex; flex-direction: column; gap: 20vh; position: relative; }
+.journey-track::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255,255,255,0.1); transform: translateX(-50%); }
+.milestone { font-family: 'Syncopate'; font-size: 2rem; text-align: center; color: var(--text-muted); transition: color 0.5s; position: relative; z-index: 2; }
+.milestone.active { color: var(--neon-cyan); text-shadow: 0 0 20px rgba(0,240,255,0.5); }
+
+/* --- 3. EXPLORATION CARDS --- */
+.hologram-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+.holo-card { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); padding: 1rem; position: relative; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.holo-card:hover { transform: translateY(-15px); border-color: var(--neon-purple); }
+.card-glow { position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(176,38,255,0.2), transparent 70%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+.holo-card:hover .card-glow { opacity: 1; }
+.holo-card img { width: 100%; height: 250px; object-fit: cover; filter: grayscale(80%) contrast(1.2); transition: 0.4s; }
+.holo-card:hover img { filter: grayscale(0%) contrast(1.1); }
+.holo-content { padding: 2rem 1rem; }
+.holo-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+.holo-content p { color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; font-size: 0.9rem; }
+.btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--text-muted); padding: 0.8rem 2rem; font-family: 'Space Grotesk'; font-weight: 600; letter-spacing: 2px; transition: 0.3s; }
+.btn-outline:hover { background: var(--text-main); color: var(--bg-dark); box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+
+/* --- 4. OBSERVATORY DASHBOARD --- */
+.sec-dashboard { align-items: center; }
+.dashboard-wrapper { width: 100%; max-width: 1200px; padding: 3rem; background: rgba(5, 7, 15, 0.6); border: 1px solid var(--glass-border); position: relative; overflow: hidden; }
+.dashboard-wrapper::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); }
+.dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+.live-indicator { color: red; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+.widget { padding: 1.5rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); }
+.widget h4 { color: var(--neon-cyan); font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 1rem; }
+.data-huge { font-family: 'Syncopate'; font-size: 2.5rem; margin-bottom: 0.5rem; }
+.progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.1); margin: 1rem 0; }
+.progress-bar .fill { height: 100%; background: var(--neon-magenta); }
+
+/* Radar CSS Animation */
+.radar-widget { position: relative; height: 150px; overflow: hidden; border-radius: 50%; border: 1px solid var(--neon-cyan); background: radial-gradient(circle, rgba(0,240,255,0.1) 0%, transparent 70%); }
+.radar-sweep { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; background: conic-gradient(from 0deg, transparent 70%, rgba(0,240,255,0.5) 100%); transform-origin: 0% 0%; animation: sweep 4s linear infinite; }
+@keyframes sweep { 100% { transform: rotate(360deg); } }
+.radar-dot { position: absolute; width: 6px; height: 6px; background: var(--neon-magenta); border-radius: 50%; box-shadow: 0 0 10px var(--neon-magenta); }
+
+/* --- 5. COSMIC SCALE --- */
+.sec-scale { align-items: center; text-align: center; overflow: hidden; }
+.scale-title { font-size: clamp(2rem, 6vw, 5rem); margin-bottom: 5rem; }
+.scale-comparison { position: relative; width: 100%; height: 300px; display: flex; align-items: center; justify-content: center; gap: 5vw; }
+.scale-item { border-radius: 50%; background: #fff; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
+.earth-scale { width: 4px; height: 4px; background: var(--neon-cyan); }
+.sun-scale { width: 100px; height: 100px; background: #ffcc00; box-shadow: 0 0 80px rgba(255,204,0,0.4); }
+.uy-scuti-scale { width: 2000px; height: 2000px; position: absolute; right: -1000px; background: radial-gradient(circle, #ff3300, transparent 70%); opacity: 0.3; z-index: -1; }
+.scale-desc { margin-top: 4rem; max-width: 600px; font-size: 1.2rem; color: var(--text-muted); line-height: 1.8; }
+
+/* --- 6. GALLERY --- */
+.gallery-masonry { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); grid-auto-rows: 250px; gap: 1.5rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+.gal-item { position: relative; overflow: hidden; border: 1px solid transparent; transition: 0.3s; }
+.gal-item:hover { border-color: var(--neon-cyan); z-index: 2; box-shadow: 0 0 30px rgba(0,240,255,0.2); }
+.gal-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) sepia(20%) hue-rotate(180deg); transition: transform 0.6s, filter 0.6s; }
+.gal-item:hover img { transform: scale(1.1); filter: brightness(1) sepia(0%); }
+.tall { grid-row: span 2; }
+.wide { grid-column: span 2; }
+
+/* --- 7. EPIC FOOTER --- */
+.sec-footer { background: linear-gradient(to top, #000 0%, transparent 100%); justify-content: flex-end; padding-bottom: 5vw; }
+.footer-content { max-width: 1000px; margin: 0 auto; text-align: center; }
+.footer-content h2 { font-size: clamp(2rem, 8vw, 6rem); color: #fff; text-shadow: 0 0 30px rgba(255,255,255,0.2); margin-bottom: 2rem; }
+.footer-content p { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 4rem; }
+.horizon-line { width: 100vw; height: 1px; background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 80%); position: relative; left: 50%; transform: translateX(-50%); margin-bottom: 4rem; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; font-family: 'Space Grotesk'; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 2px; }
+
+@media (max-width: 768px) {
+    .wide { grid-column: span 1; }
+    .hud-tl, .hud-tr { top: 1rem; font-size: 0.6rem; }
+    .hero-cta { margin-top: 2rem; }
+    .footer-bottom { flex-direction: column; gap: 2rem; }
 }
-
-/* Typography */
-.massive-title {
-    font-family: 'Syncopate', sans-serif;
-    font-size: clamp(3rem, 8vw, 10rem);
-    line-height: 0.85;
-    letter-spacing: -2px;
-    text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
-    margin-bottom: 2rem;
-}
-
-.subtitle {
-    color: var(--accent-purple);
-    letter-spacing: 8px;
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
-}
-
-.section-header { margin-bottom: 4rem; }
-.section-header h2 { font-family: 'Syncopate'; font-size: 2rem; letter-spacing: 2px; }
-.section-header .line { height: 1px; width: 100px; background: var(--accent-cyan); margin-top: 10px; }
-
-/* Glassmorphism Explorer Grid */
-.glass-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.glass-card, .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 4px;
-    padding: 1.5rem;
-    transition: transform 0.3s, border-color 0.3s;
-}
-
-.glass-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--accent-cyan);
-    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
-}
-
-.card-image {
-    height: 150px; width: 100%;
-    background: #111; border-radius: 2px;
-    margin-bottom: 1rem; position: relative; overflow: hidden;
-}
-
-/* Simulated imagery with CSS gradients to avoid local file CORS errors */
-.bg-earth { background: radial-gradient(circle at center, #1a4a6e, #000); }
-.bg-mars { background: radial-gradient(circle at center, #6e2c1a, #000); }
-.bg-bh { background: radial-gradient(circle at center, #000 30%, var(--accent-purple) 60%, #000); }
-
-.card-info h3 { font-family: 'Syncopate'; font-size: 1rem; margin-bottom: 1rem; }
-.data-row { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.2rem; }
-.data-row span { color: var(--accent-cyan); }
-
-.glass-panel.wide { max-width: 800px; }
-.glass-panel p { color: var(--text-muted); line-height: 1.6; margin: 1.5rem 0; }
-
-.action-btn {
-    background: transparent; color: var(--text-main);
-    border: 1px solid var(--accent-cyan); padding: 1rem 2rem;
-    font-family: 'Syncopate'; font-size: 0.8rem; cursor: pointer;
-    text-transform: uppercase; transition: 0.3s;
-}
-.action-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 20px rgba(0,240,255,0.4); }
