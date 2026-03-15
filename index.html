@@ -5,74 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astro-Visualizer | The Infinite Archive</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="hud top-left">SYS.ONLINE // V.1.0</div>
-    <div class="hud top-right"><button id="audio-toggle">AUDIO: OFF</button></div>
-    <div class="hud bottom-left">COORD: <span id="coordinates">0, 0, 0</span></div>
-    <div class="hud bottom-right">SCROLL TO NAVIGATE</div>
-    
-    <div class="grid-overlay"></div>
-
     <canvas id="universe-canvas"></canvas>
 
-    <main id="scroll-container">
-        <section class="section hero">
-            <div class="hero-content">
-                <p class="subtitle">MAPPING THE COSMOS, ONE STAR AT A TIME</p>
-                <h1 class="massive-title">EXPLORE<br>THE INFINITE</h1>
-                <div class="cta-wrapper">
-                    <div class="pulse-circle"></div>
-                    <p>INITIATE JOURNEY</p>
-                </div>
-            </div>
-        </section>
+    <div class="custom-cursor"></div>
+    <div class="hud hud-tl">SYS.CORE // ACTIVE</div>
+    <div class="hud hud-tr">VELOCITY: <span id="velocity-tracker">0.00c</span></div>
+    <div class="hud hud-bl">SCROLL TO NAVIGATE</div>
+    <div class="hud hud-br">DIST: <span id="distance-tracker">0 LY</span></div>
+    
+    <div class="scanline-overlay"></div>
 
-        <section class="section explorer">
-            <div class="section-header">
-                <h2>CELESTIAL DATABASE</h2>
-                <div class="line"></div>
-            </div>
-            
-            <div class="glass-grid">
-                <div class="glass-card" data-obj="earth">
-                    <div class="card-image bg-earth"></div>
-                    <div class="card-info">
-                        <h3>TERRA // EARTH</h3>
-                        <p class="data-row"><span>CLASS:</span> Habitable</p>
-                        <p class="data-row"><span>DIST:</span> 0 LY</p>
+    <main id="smooth-wrapper">
+        <div id="smooth-content">
+
+            <section class="sec-hero">
+                <div class="hero-content">
+                    <p class="eyebrow-text">MAPPING THE COSMOS</p>
+                    <h1 class="glitch-title" data-text="ASTRO">ASTRO<br>VISUALIZER</h1>
+                    <div class="hero-cta">
+                        <div class="pulse-ring"></div>
+                        <span>INITIATE SEQUENCE</span>
                     </div>
                 </div>
+            </section>
 
-                <div class="glass-card" data-obj="mars">
-                    <div class="card-image bg-mars"></div>
-                    <div class="card-info">
-                        <h3>ARES // MARS</h3>
-                        <p class="data-row"><span>CLASS:</span> Barren</p>
-                        <p class="data-row"><span>DIST:</span> 12.5 LM</p>
+            <section class="sec-journey">
+                <div class="journey-track">
+                    <div class="milestone" data-dist="0">EARTH</div>
+                    <div class="milestone" data-dist="1">SOLAR SYSTEM</div>
+                    <div class="milestone" data-dist="2">OORT CLOUD</div>
+                    <div class="milestone" data-dist="3">ORION ARM</div>
+                    <div class="milestone" data-dist="4">DEEP SPACE</div>
+                </div>
+            </section>
+
+            <section class="sec-explore">
+                <div class="section-heading">
+                    <h2>CELESTIAL ANOMALIES</h2>
+                    <div class="neon-line"></div>
+                </div>
+                <div class="hologram-grid">
+                    <div class="holo-card">
+                        <div class="card-glow"></div>
+                        <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=800" alt="Nebula">
+                        <div class="holo-content">
+                            <h3>CARINA NEBULA</h3>
+                            <p>Stellar nursery located 8,500 light-years away. Birthplace of hypergiant stars.</p>
+                            <button class="btn-outline">ANALYZE</button>
+                        </div>
+                    </div>
+                    <div class="holo-card">
+                        <div class="card-glow"></div>
+                        <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&q=80&w=800" alt="Black Hole">
+                        <div class="holo-content">
+                            <h3>TON 618</h3>
+                            <p>Ultramassive black hole. Mass equivalent to 66 billion Suns. Event horizon stretches light-weeks.</p>
+                            <button class="btn-outline">ANALYZE</button>
+                        </div>
+                    </div>
+                    <div class="holo-card">
+                        <div class="card-glow"></div>
+                        <img src="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80&w=800" alt="Exoplanet">
+                        <div class="holo-content">
+                            <h3>KEPLER-186f</h3>
+                            <p>First Earth-size exoplanet discovered in the habitable zone of another star.</p>
+                            <button class="btn-outline">ANALYZE</button>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="glass-card" data-obj="bh">
-                    <div class="card-image bg-bh"></div>
-                    <div class="card-info">
-                        <h3>SAGITTARIUS A*</h3>
-                        <p class="data-row"><span>CLASS:</span> Supermassive</p>
-                        <p class="data-row"><span>DIST:</span> 26,000 LY</p>
+            <section class="sec-dashboard">
+                <div class="dashboard-wrapper glass-panel">
+                    <div class="dash-header">
+                        <h2>ORBITAL TELEMETRY</h2>
+                        <span class="live-indicator">LIVE DATA FEED</span>
+                    </div>
+                    <div class="dash-grid">
+                        <div class="widget">
+                            <h4>LOCAL TEMPERATURE</h4>
+                            <div class="data-huge">-270.4°C</div>
+                            <p>Cosmic Microwave Background</p>
+                        </div>
+                        <div class="widget">
+                            <h4>RADIATION LEVELS</h4>
+                            <div class="progress-bar"><div class="fill" style="width: 78%;"></div></div>
+                            <p>Solar Wind Activity: HIGH</p>
+                        </div>
+                        <div class="widget radar-widget">
+                            <div class="radar-sweep"></div>
+                            <div class="radar-dot" style="top:30%; left:60%"></div>
+                            <div class="radar-dot" style="top:70%; left:40%"></div>
+                        </div>
+                        <div class="widget">
+                            <h4>SPECTRAL ANALYSIS</h4>
+                            <div class="spectral-lines">
+                                <span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <p>Hydrogen / Helium dominant</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="section scale">
-            <div class="glass-panel wide">
-                <h2>THE EDGE OF OBSERVATION</h2>
-                <p>You are currently moving at 100x the speed of light through the simulation. The particles surrounding you represent local star clusters.</p>
-                <button class="action-btn">ACCESS LIVE NASA DATA</button>
-            </div>
-        </section>
+            <section class="sec-scale">
+                <h2 class="scale-title">THE SCALE OF INFINITY</h2>
+                <div class="scale-comparison">
+                    <div class="scale-item earth-scale"></div>
+                    <div class="scale-item sun-scale"></div>
+                    <div class="scale-item uy-scuti-scale"></div>
+                </div>
+                <p class="scale-desc">If the Earth were a single pixel, the Sun would be a bowling ball, and UY Scuti would engulf the orbit of Jupiter.</p>
+            </section>
+
+            <section class="sec-gallery">
+                <div class="section-heading">
+                    <h2>VISUAL ARCHIVE</h2>
+                    <div class="neon-line"></div>
+                </div>
+                <div class="gallery-masonry">
+                    <div class="gal-item tall"><img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" alt="Space"></div>
+                    <div class="gal-item wide"><img src="https://images.unsplash.com/photo-1543722530-d2c3201371e7?auto=format&fit=crop&q=80&w=1200" alt="Space"></div>
+                    <div class="gal-item"><img src="https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&q=80&w=800" alt="Space"></div>
+                    <div class="gal-item tall"><img src="https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&q=80&w=800" alt="Space"></div>
+                </div>
+            </section>
+
+            <section class="sec-footer">
+                <div class="footer-content">
+                    <h2>THE EDGE OF OBSERVATION</h2>
+                    <p>Beyond this point lies the unobservable universe. A void stretching across 46 billion light-years of darkness.</p>
+                    <div class="horizon-line"></div>
+                    <div class="footer-bottom">
+                        <span>ASTRO-VISUALIZER // INITIATIVE</span>
+                        <button class="btn-outline" onclick="window.scrollTo({top:0, behavior:'smooth'})">RETURN TO ORIGIN</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
