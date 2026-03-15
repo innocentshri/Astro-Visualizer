@@ -1,134 +1,144 @@
 :root {
-    --bg: #030303;
-    --text: #f0f0f0;
-    --accent: #555;
+    --bg-deep: #02040a;
+    --accent-cyan: #00f0ff;
+    --accent-purple: #b026ff;
+    --text-main: #ffffff;
+    --text-muted: #8a93a5;
+    --glass-bg: rgba(10, 15, 30, 0.4);
+    --glass-border: rgba(0, 240, 255, 0.2);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: crosshair; /* Sci-fi cursor */
+}
 
 body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
     overflow-x: hidden;
-    cursor: none;
 }
 
-/* Base utilities */
-.custom-cursor {
-    width: 20px; height: 20px;
-    background: white; border-radius: 50%;
-    position: fixed; pointer-events: none;
-    z-index: 9999; mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
+/* 3D Canvas fixed to background */
+#universe-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
 }
 
-.noise-overlay {
-    position: fixed; inset: 0;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_filmgrain.png');
-    opacity: 0.05; pointer-events: none; z-index: 100;
+/* Sci-Fi HUD Elements */
+.hud {
+    position: fixed;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    z-index: 100;
+    pointer-events: none;
+}
+.top-left { top: 2vw; left: 2vw; }
+.top-right { top: 2vw; right: 2vw; pointer-events: auto; }
+.bottom-left { bottom: 2vw; left: 2vw; }
+.bottom-right { bottom: 2vw; right: 2vw; }
+
+#audio-toggle {
+    background: none; border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan); padding: 5px 10px;
+    font-family: inherit; cursor: pointer; transition: all 0.3s;
+}
+#audio-toggle:hover { background: var(--accent-cyan); color: #000; }
+
+/* Grid Overlay */
+.grid-overlay {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: 
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 5vw 5vw;
 }
 
 /* Sections */
-.panel {
-    min-height: 100vh; width: 100vw;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    position: relative; padding: 5vw;
+.section {
+    min-height: 100vh;
+    width: 100vw;
+    padding: 10vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
 }
 
-.hero { background: radial-gradient(circle at center, #111 0%, #000 100%); }
-
-.massive-text {
+/* Typography */
+.massive-title {
     font-family: 'Syncopate', sans-serif;
-    font-size: clamp(4rem, 15vw, 15rem);
-    line-height: 0.8; letter-spacing: -5px;
+    font-size: clamp(3rem, 8vw, 10rem);
+    line-height: 0.85;
+    letter-spacing: -2px;
+    text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+    margin-bottom: 2rem;
 }
 
-.tagline {
-    margin-top: 2rem; letter-spacing: 0.5rem;
-    font-size: 0.8rem; color: var(--accent);
+.subtitle {
+    color: var(--accent-purple);
+    letter-spacing: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
 }
 
-.scroll-down-line {
-    width: 1px; height: 100px;
-    background: rgba(255,255,255,0.2); margin-top: 40px;
-    position: relative; overflow: hidden;
+.section-header { margin-bottom: 4rem; }
+.section-header h2 { font-family: 'Syncopate'; font-size: 2rem; letter-spacing: 2px; }
+.section-header .line { height: 1px; width: 100px; background: var(--accent-cyan); margin-top: 10px; }
+
+/* Glassmorphism Explorer Grid */
+.glass-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
 }
 
-.scroll-down-line::after {
-    content: ''; position: absolute;
-    top: 0; left: 0; width: 100%; height: 50%;
-    background: white;
-    animation: scrollDrop 2s infinite ease-in-out;
+.glass-card, .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    transition: transform 0.3s, border-color 0.3s;
 }
 
-@keyframes scrollDrop {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(200%); }
+.glass-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
 }
 
-/* Voyager Section */
-.voyager {
-    flex-direction: row; justify-content: space-around;
-    background: #050505; gap: 50px; flex-wrap: wrap;
+.card-image {
+    height: 150px; width: 100%;
+    background: #111; border-radius: 2px;
+    margin-bottom: 1rem; position: relative; overflow: hidden;
 }
 
-.content-box { max-width: 500px; z-index: 2; }
-.content-box h2 { font-family: 'Syncopate'; font-size: 3rem; margin-bottom: 1rem; }
+/* Simulated imagery with CSS gradients to avoid local file CORS errors */
+.bg-earth { background: radial-gradient(circle at center, #1a4a6e, #000); }
+.bg-mars { background: radial-gradient(circle at center, #6e2c1a, #000); }
+.bg-bh { background: radial-gradient(circle at center, #000 30%, var(--accent-purple) 60%, #000); }
 
-.data-stat {
-    font-family: monospace; color: #888;
-    margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;
+.card-info h3 { font-family: 'Syncopate'; font-size: 1rem; margin-bottom: 1rem; }
+.data-row { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.2rem; }
+.data-row span { color: var(--accent-cyan); }
+
+.glass-panel.wide { max-width: 800px; }
+.glass-panel p { color: var(--text-muted); line-height: 1.6; margin: 1.5rem 0; }
+
+.action-btn {
+    background: transparent; color: var(--text-main);
+    border: 1px solid var(--accent-cyan); padding: 1rem 2rem;
+    font-family: 'Syncopate'; font-size: 0.8rem; cursor: pointer;
+    text-transform: uppercase; transition: 0.3s;
 }
-
-.floating-img {
-    width: clamp(300px, 40vw, 600px); height: 60vh;
-    object-fit: cover; opacity: 0.6; filter: grayscale(100%);
-}
-
-/* Horizontal Scroll Magic */
-.horizontal-container {
-    height: 100vh; width: 100vw;
-    overflow: hidden; position: relative;
-}
-
-.horizontal-wrapper {
-    display: flex; width: 300vw; /* 3 panels = 300% width */
-    height: 100%;
-}
-
-.h-panel {
-    width: 100vw; height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    padding: 10vw; position: relative;
-}
-
-.milky-way { background: #080808; flex-direction: column; }
-.jwst { background: #0a0a0a; gap: 5vw; flex-wrap: wrap; }
-.edge { background: #000; flex-direction: column; }
-
-.outline-text {
-    font-family: 'Syncopate'; font-size: 10vw;
-    color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-    white-space: nowrap;
-}
-
-.h-desc {
-    max-width: 600px; text-align: center;
-    margin-top: 2rem; font-size: 1.2rem; line-height: 1.6; color: #ccc;
-}
-
-.jwst img { width: clamp(300px, 40vw, 600px); height: 70vh; object-fit: cover; }
-.jwst-content { max-width: 500px; }
-.jwst-content h2 { font-family: 'Syncopate'; font-size: 3rem; margin-bottom: 1rem; }
-
-/* Footer */
-.footer { background: #000; }
-.btn {
-    margin-top: 2rem; padding: 1rem 3rem;
-    border: 1px solid white; color: white;
-    text-decoration: none; font-family: 'Syncopate';
-    font-size: 0.8rem; letter-spacing: 2px; transition: all 0.3s;
-}
-.btn:hover { background: white; color: black; }
+.action-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 20px rgba(0,240,255,0.4); }
