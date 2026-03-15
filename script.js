@@ -1,33 +1,63 @@
-// Register GSAP ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-// --- 1. THREE.JS 3D UNIVERSE SETUP ---
+// --- CUSTOM CURSOR ---
+const cursor = document.querySelector('.custom-cursor');
+window.addEventListener('mousemove', (e) => {
+    gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1, ease: "power2.out" });
+});
+
+// Cursor hover effects on interactables
+document.querySelectorAll('button, .holo-card').forEach(el => {
+    el.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 1.5, borderColor: '#ff007f' }));
+    el.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, borderColor: '#00f0ff' }));
+});
+
+// --- THREE.JS IMMERSIVE UNIVERSE ---
 const canvas = document.querySelector('#universe-canvas');
 const scene = new THREE.Scene();
 
-// Camera setup
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.position.z = 50; // Start back a bit
+// Camera setup for deep space perspective
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
+camera.position.z = 2000; 
 
-// Renderer setup
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize for retina
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// --- 2. CREATE THE INFINITE STARFIELD ---
-const particlesGeometry = new THREE.BufferGeometry();
-const particlesCount = 5000; // 5000 stars
+// Generate Starfield / Nebula Particles
+const particlesCount = 15000;
 const posArray = new Float32Array(particlesCount * 3);
+const colorsArray = new Float32Array(particlesCount * 3);
 
-for(let i = 0; i < particlesCount * 3; i++) {
-    // Spread stars widely across X, Y, and deep into the Z axis
-    posArray[i] = (Math.random() - 0.5) * 500;
+const colorCyan = new THREE.Color('#00f0ff');
+const colorPurple = new THREE.Color('#b026ff');
+const colorWhite = new THREE.Color('#ffffff');
+
+for(let i = 0; i < particlesCount * 3; i+=3) {
+    // Spread particles deep across Z-axis to allow flying through them
+    posArray[i] = (Math.random() - 0.5) * 4000;     // X
+    posArray[i+1] = (Math.random() - 0.5) * 4000;   // Y
+    posArray[i+2] = (Math.random() - 0.5) * 8000;   // Z (Depth)
+
+    // Mix colors for nebula effect
+    const mixRatio = Math.random();
+    let starColor = colorWhite;
+    if(mixRatio > 0.6) starColor = colorCyan;
+    if(mixRatio > 0.85) starColor = colorPurple;
+
+    colorsArray[i] = starColor.r;
+    colorsArray[i+1] = starColor.g;
+    colorsArray[i+2] = starColor.b;
 }
-particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
+const particlesGeometry = new THREE.BufferGeometry();
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+
+// Shader material for glowing, colored points
 const particlesMaterial = new THREE.PointsMaterial({
-    size: 0.5,
-    color: 0x00f0ff,
+    size: 2.5,
+    vertexColors: true,
     transparent: true,
     opacity: 0.8,
     blending: THREE.AdditiveBlending
@@ -36,106 +66,93 @@ const particlesMaterial = new THREE.PointsMaterial({
 const starMesh = new THREE.Points(particlesGeometry, particlesMaterial);
 scene.add(starMesh);
 
-// --- 3. CREATE HOLOGRAPHIC PLANET ---
-// This acts as the visual anchor in the 3D space
-const planetGeometry = new THREE.SphereGeometry(15, 32, 32);
-const planetMaterial = new THREE.MeshBasicMaterial({ 
-    color: 0xb026ff, 
-    wireframe: true, 
-    transparent: true, 
-    opacity: 0.15 
-});
-const planet = new THREE.Mesh(planetGeometry, planetMaterial);
-planet.position.set(20, 0, -50); // Position it off to the right and deep in space
-scene.add(planet);
-
-// --- 4. ANIMATION LOOP ---
-const clock = new THREE.Clock();
-let mouseX = 0;
-let mouseY = 0;
-
-// Mouse tracking for subtle camera parallax
+// Mouse Parallax Logic
+let mouseX = 0; let mouseY = 0;
 window.addEventListener('mousemove', (event) => {
     mouseX = (event.clientX / window.innerWidth) - 0.5;
     mouseY = (event.clientY / window.innerHeight) - 0.5;
 });
 
+// Animation Loop
+const clock = new THREE.Clock();
 function animate() {
     const elapsedTime = clock.getElapsedTime();
 
-    // Slowly rotate the universe and the planet
+    // Slowly rotate the entire galaxy
     starMesh.rotation.y = elapsedTime * 0.02;
-    planet.rotation.y = elapsedTime * 0.1;
-    planet.rotation.x = elapsedTime * 0.05;
+    starMesh.rotation.z = elapsedTime * 0.01;
 
-    // Subtle camera movement based on mouse (Parallax)
-    camera.position.x += (mouseX * 10 - camera.position.x) * 0.05;
-    camera.position.y += (-mouseY * 10 - camera.position.y) * 0.05;
+    // Smooth camera drift based on mouse
+    camera.position.x += (mouseX * 500 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY * 500 - camera.position.y) * 0.02;
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
 animate();
 
-// Handle Window Resize
+// Handle Resize
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// --- 5. SCROLL INTERACTIONS & GSAP ---
 
-// A. Move the 3D camera through the starfield when scrolling
+// --- GSAP SCROLL ANIMATIONS ---
+
+// 1. WebGL Camera Fly-Through (The core "Massive" feeling)
+// As you scroll down, the camera flies deep into the Z-axis of the Three.js scene
 ScrollTrigger.create({
     trigger: "body",
     start: "top top",
     end: "bottom bottom",
-    scrub: 1, // Smooth scrubbing
+    scrub: 1,
     onUpdate: (self) => {
-        // Move camera forward on Z axis
-        camera.position.z = 50 - (self.progress * 150);
-        
-        // Update HUD coordinates
-        document.getElementById('coordinates').innerText = 
-            `${Math.round(camera.position.x)}, ${Math.round(camera.position.y)}, ${Math.round(camera.position.z)}`;
+        // Move camera from z=2000 down to z=-3000
+        gsap.to(camera.position, {
+            z: 2000 - (self.progress * 5000),
+            duration: 0.5,
+            ease: "power1.out"
+        });
+
+        // Update HUD Velocity and Distance logic
+        document.getElementById('velocity-tracker').innerText = (self.velocity / 100).toFixed(2) + "c";
+        document.getElementById('distance-tracker').innerText = Math.round(self.progress * 46000) + " M LY";
     }
 });
 
-// B. Animate HTML UI elements entering the screen
-gsap.utils.toArray('.glass-card').forEach((card, i) => {
-    gsap.from(card, {
-        scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        delay: i * 0.1, // Stagger effect
-        ease: "power3.out"
+// 2. Journey Milestones (Storytelling fade-in)
+const milestones = gsap.utils.toArray('.milestone');
+milestones.forEach((milestone, i) => {
+    ScrollTrigger.create({
+        trigger: milestone,
+        start: "top center",
+        end: "bottom center",
+        toggleClass: "active",
     });
 });
 
-gsap.from(".massive-title", { y: 100, opacity: 0, duration: 1.5, ease: "power4.out" });
+// 3. Staggered reveal for Explorer Cards
+gsap.from(".holo-card", {
+    scrollTrigger: { trigger: ".sec-explore", start: "top 70%" },
+    y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power4.out"
+});
 
-// --- 6. AUDIO SYSTEM (Foundation) ---
-const audioBtn = document.getElementById('audio-toggle');
-let audioPlaying = false;
-// Note: Browsers block autoplay. Create an audio object here with a valid URL later.
-const ambientSound = new Audio(); 
+// 4. Dashboard Entry Animation
+gsap.from(".dashboard-wrapper", {
+    scrollTrigger: { trigger: ".sec-dashboard", start: "top 60%" },
+    scale: 0.95, opacity: 0, rotationX: 10, duration: 1.2, ease: "expo.out"
+});
 
-audioBtn.addEventListener('click', () => {
-    audioPlaying = !audioPlaying;
-    if(audioPlaying) {
-        audioBtn.innerText = "AUDIO: ON";
-        audioBtn.style.background = "var(--accent-cyan)";
-        audioBtn.style.color = "#000";
-        // ambientSound.play();
-    } else {
-        audioBtn.innerText = "AUDIO: OFF";
-        audioBtn.style.background = "none";
-        audioBtn.style.color = "var(--accent-cyan)";
-        // ambientSound.pause();
-    }
+// 5. Gallery Masonry Reveal
+gsap.from(".gal-item", {
+    scrollTrigger: { trigger: ".sec-gallery", start: "top 80%" },
+    scale: 0.8, opacity: 0, duration: 1, stagger: 0.1, ease: "back.out(1.7)"
+});
+
+// 6. Hero Glitch Entry
+window.addEventListener('load', () => {
+    gsap.from(".glitch-title", { y: 50, opacity: 0, duration: 2, ease: "power4.out" });
+    gsap.from(".eyebrow-text, .hero-cta", { opacity: 0, duration: 2, delay: 0.5 });
 });
