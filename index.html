@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroVisualizer | Deep Space Archive</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="custom-cursor"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="loader">
+        <h1 class="loader-text">INITIALIZING...</h1>
+    </div>
+
+    <main id="main-content">
+        <section class="hero">
+            <div class="hero-content">
+                <p class="tagline">ARCHIVE 01 // DEEP SPACE</p>
+                <h1 class="main-title">ASTRO<br>VISUAL</h1>
+            </div>
+            <div class="scroll-indicator">SCROLL TO EXPLORE</div>
+        </section>
+
+        <section class="info-section">
+            <div class="content-wrapper">
+                <div class="text-side">
+                    <h2 class="reveal-text">VOYAGER 1</h2>
+                    <p class="description">Currently 14.5 billion miles from Earth. Exploring the interstellar medium beyond the reach of our sun's solar wind.</p>
+                </div>
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=1200" alt="Space Mission">
+                </div>
+            </div>
+        </section>
+
+        <section class="footer-section">
+            <div class="footer-content">
+                <h2>END OF DATA</h2>
+                <p>Built with GSAP & ScrollTrigger</p>
+                <a href="#" class="github-link">VIEW SOURCE</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
